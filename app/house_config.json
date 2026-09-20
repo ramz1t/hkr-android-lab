@@ -1,0 +1,7 @@
+{
+  "target_temperature": 17.0,
+  "living_room_lights": "OFF",
+  "hvac_mode": "AUTO",
+  "security_system": "ARMED",
+  "last_updated_by": "EcoAgent"
+}
