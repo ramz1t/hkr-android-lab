@@ -13,12 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val isAlert = uiState.detectionResult?.isAttack == true
     val accentColor = if (isAlert) Color.Red else Color(0xFF2E7D32)
+    val formatter = SimpleDateFormat("HH:mm:ss")
+    val timestamp = formatter.format(uiState.updatedAt)
 
     Column(
         modifier = Modifier
@@ -30,8 +33,9 @@ fun MainScreen(viewModel: MainViewModel) {
         Spacer(modifier = Modifier.padding(vertical = 32.dp))
 
         if (uiState.isLoading) {
-            CircularProgressIndicator(color = accentColor)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text("Updating...")
+        } else {
+            Text("Updated at $timestamp")
         }
 
         uiState.errorMessage?.let {
@@ -39,7 +43,9 @@ fun MainScreen(viewModel: MainViewModel) {
         }
 
         Card(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
@@ -98,7 +104,9 @@ fun MainScreen(viewModel: MainViewModel) {
 @Composable
 fun InfoRow(label: String, value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = label, fontWeight = FontWeight.Medium)

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Date
 
 import kotlin.time.Duration.Companion.seconds
 
@@ -18,7 +19,8 @@ data class MainUiState(
     val houseConfig: Map<String, Any>? = null,
     val detectionResult: DetectionResult? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val updatedAt: Date = Date()
 )
 
 class MainViewModel(
@@ -38,7 +40,7 @@ class MainViewModel(
             while (isActive) {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 pollData()
-                _uiState.value = _uiState.value.copy(isLoading = false)
+                _uiState.value = _uiState.value.copy(isLoading = false, updatedAt = Date())
                 delay(30.seconds)
             }
         }
