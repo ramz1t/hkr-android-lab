@@ -59,15 +59,10 @@ class MainViewModel(
             var highestDetection: DetectionResult? = null
             
             for (pr in prs) {
-                val commentsResult = repository.getComments(pr.number)
-                commentsResult.onSuccess { comments ->
-                    for (comment in comments) {
-                        val detection = detector.analyzeText(comment.body)
-                        val currentHighest = highestDetection?.confidenceScore ?: -1
-                        if (detection.confidenceScore > currentHighest) {
-                            highestDetection = detection
-                        }
-                    }
+                val detection = detector.analyzeText(pr.title)
+                val currentHighest = highestDetection?.confidenceScore ?: -1
+                if (detection.confidenceScore > currentHighest) {
+                    highestDetection = detection
                 }
             }
             

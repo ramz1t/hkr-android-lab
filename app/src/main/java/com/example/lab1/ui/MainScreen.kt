@@ -64,9 +64,9 @@ fun MainScreen(viewModel: MainViewModel) {
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = if (isAlert) Color.Red else accentColor)
+            colors = CardDefaults.cardColors(containerColor = accentColor)
         ) {
-            Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = if (isAlert) "SECURITY ALERT" else "SYSTEM NORMAL",
                     color = Color.White,

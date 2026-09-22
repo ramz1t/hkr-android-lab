@@ -13,6 +13,8 @@ import com.example.lab1.domain.DeceptionDetector
 import com.example.lab1.ui.MainScreen
 import com.example.lab1.ui.MainViewModel
 import com.example.lab1.ui.theme.Lab1Theme
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,8 +22,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

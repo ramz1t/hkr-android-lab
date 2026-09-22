@@ -1,7 +1,5 @@
 package com.example.lab1.data.model
 
-import com.google.gson.annotations.SerializedName
-
 data class PullRequest(
     val number: Int,
     val title: String,
@@ -9,12 +7,11 @@ data class PullRequest(
     val state: String
 )
 
-data class GithubComment(
-    val id: Long,
-    val body: String,
-    @SerializedName("user") val user: GithubUser
+data class GitHubFileResponse(
+    val content: String,
+    val encoding: String
 )
 
-data class GithubUser(
-    val login: String
-)
+enum class PullRequestState {
+    open, closed, all
+}

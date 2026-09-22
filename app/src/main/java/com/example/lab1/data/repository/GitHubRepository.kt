@@ -2,8 +2,8 @@ package com.example.lab1.data.repository
 
 import android.util.Base64
 import com.example.lab1.data.api.GitHubApi
-import com.example.lab1.data.model.GithubComment
 import com.example.lab1.data.model.PullRequest
+import com.example.lab1.data.model.PullRequestState
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -33,17 +33,8 @@ class GitHubRepository(
 
     suspend fun getPullRequests(): Result<List<PullRequest>> = withContext(Dispatchers.IO) {
         try {
-            val prs = api.getPullRequests(authToken, owner, repo)
+            val prs = api.getPullRequests(authToken, owner, repo, PullRequestState.open)
             Result.success(prs)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun getComments(issueNumber: Int): Result<List<GithubComment>> = withContext(Dispatchers.IO) {
-        try {
-            val comments = api.getComments(authToken, owner, repo, issueNumber)
-            Result.success(comments)
         } catch (e: Exception) {
             Result.failure(e)
         }

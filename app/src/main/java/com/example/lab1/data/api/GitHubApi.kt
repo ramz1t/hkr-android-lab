@@ -1,10 +1,12 @@
 package com.example.lab1.data.api
 
-import com.example.lab1.data.model.GithubComment
+import com.example.lab1.data.model.GitHubFileResponse
 import com.example.lab1.data.model.PullRequest
+import com.example.lab1.data.model.PullRequestState
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface GitHubApi {
     @GET("repos/{owner}/{repo}/contents/house_config.json")
@@ -18,19 +20,7 @@ interface GitHubApi {
     suspend fun getPullRequests(
         @Header("Authorization") token: String,
         @Path("owner") owner: String,
-        @Path("repo") repo: String
-    ): List<PullRequest>
-
-    @GET("repos/{owner}/{repo}/issues/{issue_number}/comments")
-    suspend fun getComments(
-        @Header("Authorization") token: String,
-        @Path("owner") owner: String,
         @Path("repo") repo: String,
-        @Path("issue_number") issueNumber: Int
-    ): List<GithubComment>
+        @Query("state") state: PullRequestState = PullRequestState.all
+    ): List<PullRequest>
 }
-
-data class GitHubFileResponse(
-    val content: String,
-    val encoding: String
-)
