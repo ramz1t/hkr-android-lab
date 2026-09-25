@@ -10,9 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lab1.domain.DetectorType
 import java.text.SimpleDateFormat
 
 @Composable
@@ -20,7 +22,7 @@ fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val isAlert = uiState.detectionResult?.isAttack == true
     val accentColor = if (isAlert) Color.Red else Color(0xFF2E7D32)
-    val formatter = SimpleDateFormat("HH:mm:ss")
+    val formatter = SimpleDateFormat("HH:mm:ss", LocalConfiguration.current.locales[0])
     val timestamp = formatter.format(uiState.updatedAt)
 
     Column(
@@ -38,7 +40,11 @@ fun MainScreen(viewModel: MainViewModel) {
             Text("Updated at $timestamp")
         }
 
-        uiState.errorMessage?.let {
+        uiState.configErrorMessage?.let {
+            Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
+        }
+
+        uiState.detectorErrorMessage?.let {
             Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
         }
 
@@ -63,6 +69,39 @@ fun MainScreen(viewModel: MainViewModel) {
         }
 
         Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(
+                        text = "Alert detector",
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = uiState.selectedDetector.label,
+                    )
+                }
+                Switch(
+                    checked = uiState.selectedDetector == DetectorType.JEV,
+                    onCheckedChange = { useJev ->
+                        viewModel.selectDetector(
+                            if (useJev) DetectorType.JEV else DetectorType.HEURISTIC,
+                        )
+                    },
+                    enabled = !uiState.isLoading,
+                )
+            }
+        }
+
+        Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = accentColor)
         ) {
@@ -73,7 +112,7 @@ fun MainScreen(viewModel: MainViewModel) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
-                
+
                 uiState.detectionResult?.let { detection ->
                     if (isAlert) {
                         Spacer(modifier = Modifier.height(8.dp))

@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -16,8 +17,6 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -26,10 +25,15 @@ android {
         val githubToken = localProperties.getProperty("GITHUB_TOKEN") ?: ""
         val githubOwner = localProperties.getProperty("GITHUB_OWNER") ?: "OWNER_PLACEHOLDER"
         val githubRepo = localProperties.getProperty("GITHUB_REPO") ?: "smart-home-gitops"
-        
+        val openRouterApiKey = localProperties.getProperty("OPENROUTER_API_KEY") ?: ""
+        val openRouterModel =
+            localProperties.getProperty("OPENROUTER_MODEL") ?: "typesafe/jev-1.13"
+
         buildConfigField("String", "GITHUB_TOKEN", "\"$githubToken\"")
         buildConfigField("String", "GITHUB_OWNER", "\"$githubOwner\"")
         buildConfigField("String", "GITHUB_REPO", "\"$githubRepo\"")
+        buildConfigField("String", "OPENROUTER_API_KEY", "\"$openRouterApiKey\"")
+        buildConfigField("String", "OPENROUTER_MODEL", "\"$openRouterModel\"")
     }
 
     buildTypes {
@@ -63,13 +67,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -8,13 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.lab1.data.api.GitHubApi
+import com.example.lab1.data.api.OneModelClient
 import com.example.lab1.data.repository.GitHubRepository
-import com.example.lab1.domain.DeceptionDetector
+import com.example.lab1.domain.DetectorType
+import com.example.lab1.domain.HeuristicDetector
+import com.example.lab1.domain.JevDetector
 import com.example.lab1.ui.MainScreen
 import com.example.lab1.ui.MainViewModel
 import com.example.lab1.ui.theme.Lab1Theme
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -22,16 +23,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
-            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -42,11 +35,18 @@ class MainActivity : ComponentActivity() {
             owner = BuildConfig.GITHUB_OWNER,
             repo = BuildConfig.GITHUB_REPO
         )
-        val detector = DeceptionDetector()
+        val detectors = mapOf(
+            DetectorType.HEURISTIC to HeuristicDetector(),
+            DetectorType.JEV to JevDetector(
+                client = OneModelClient(
+                    apiKey = BuildConfig.OPENROUTER_API_KEY,
+                )
+            ),
+        )
 
         val viewModelFactory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainViewModel(repository, detector) as T
+                return MainViewModel(repository, detectors) as T
             }
         }
 
