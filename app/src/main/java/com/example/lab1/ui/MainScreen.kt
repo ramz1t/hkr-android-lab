@@ -1,5 +1,6 @@
 package com.example.lab1.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,6 +47,18 @@ fun MainScreen(viewModel: MainViewModel) {
 
         uiState.detectorErrorMessage?.let {
             Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
+        }
+
+        uiState.actionErrorMessage?.let {
+            Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 16.dp))
+        }
+
+        uiState.actionMessage?.let {
+            Text(
+                text = it,
+                color = Color(0xFF2E7D32),
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
         }
 
         Card(
@@ -133,6 +146,41 @@ fun MainScreen(viewModel: MainViewModel) {
                             color = Color.White,
                             modifier = Modifier.align(Alignment.Start)
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Button(
+                                onClick = viewModel::forceMerge,
+                                enabled = !uiState.isLoading && !uiState.isActionInProgress,
+                                border = BorderStroke(1.dp, Color.White),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White,
+                                ),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("Force Merge")
+                            }
+                            OutlinedButton(
+                                onClick = viewModel::forceReject,
+                                enabled = !uiState.isLoading && !uiState.isActionInProgress,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color(0xFFB71C1C),
+                                ),
+                                modifier = Modifier.weight(1f),
+                            ) {
+                                Text("Force Reject")
+                            }
+                        }
+                        if (uiState.isActionInProgress) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Command in progress...",
+                                color = Color.White,
+                            )
+                        }
                     }
                 }
             }

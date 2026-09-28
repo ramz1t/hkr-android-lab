@@ -67,7 +67,7 @@ class JevDetector(
 
     private companion object {
         const val ATTACK_INSTRUCTIONS =
-            "Does this text message report an urgent or critical physical house problem, " +
+            "Do these pull request comments report an urgent or critical physical house problem, " +
                 "such as freezing equipment, frozen equipment, valve failure, an electrical issue, " +
                 "a structural crack, an emergency, an intrusion, a malfunction, a critical condition, or a warning?"
     }
